@@ -1,5 +1,6 @@
 from flag_parse import ftp_flag_parse
 from server import start_ftp_server
+from client import start_ftp_client
 from exception import ftp_exit
 
 if __name__ == "__main__":
@@ -12,6 +13,7 @@ if __name__ == "__main__":
         start_ftp_server(ftp_tuple)
         pass
     elif ftp_mode == 'client':
+        start_ftp_client(ftp_tuple)
         pass
     elif ftp_mode == 'upload':
         pass
