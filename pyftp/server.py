@@ -26,8 +26,12 @@ def start_ftp_server(ftp_tuple):
     handler = FTPHandler
     handler.authorizer = authorizer
 
+    if host != '':
+        handler.masquerade_address = host
+        
+    handler.passive_ports = range(50000,51000)
+
     server = FTPServer(('0.0.0.0', port), handler)
-    print("pid is" + str(os.getpid))
     print("FTP Server Start")
     server.serve_forever()
     ftp_exit(0, "FTP Server Exit")
