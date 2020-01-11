@@ -30,7 +30,7 @@ def ftp_flag_parse():
     parser.add_argument('-p', '--password', dest="password",
                         help="ftp password", default='')
 
-    parser.add_argument('-a', '--path', metavar='target_path',
+    parser.add_argument('-a', '--path', metavar='target_path', default="",
                         help="target path,coule be upload path or ftp server serve path", dest='path')
 
     parser.add_argument('-c', '--config', const="./config.json",
@@ -52,17 +52,15 @@ def ftp_flag_parse():
         return config.parse_json_file(args.use_config)
         pass
 
-    config.set_mode(args.mode)
-
-    return config.generate_ftp_tuple(args.host,
-                                     args.port,
-                                     args.user,
-                                     args.password,
-                                     args.path)
+    return config.generate_ftp_info(args.host,
+                                    args.port,
+                                    args.user,
+                                    args.password,
+                                    args.path,
+                                    args.mode)
     pass
 
 
 if __name__ == "__main__":
     print(ftp_flag_parse())
-    print(config.get_mode())
     pass
