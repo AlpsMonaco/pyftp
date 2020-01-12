@@ -13,6 +13,7 @@ def start_ftp_client(ftp_tuple):
 class FTPClient:
     __ftp_session = None
     __quit = False
+    __path = "/"
 
     def __init__(self, host='', port=21, user='', password=''):
         ftp_client = FTP()
@@ -30,16 +31,17 @@ class FTPClient:
             pass
 
     def start_interact_ftp(self):
+        print('Welcome to pyftp interact terminal!')
         while not self.__quit:
             try:
-                input_cmd = input(">")
+                input_cmd = input(self.__path + " >")
                 pass
             except KeyboardInterrupt as e:
                 self.__quit = True
                 pass
-
-            self.ftp_command_parser(input_cmd)
-            pass
+            else:
+                self.ftp_command_parser(input_cmd)
+                pass
 
     def close(self):
         self.__ftp_session.close()
@@ -50,8 +52,15 @@ class FTPClient:
         pass
 
     def get_cwd(self):
-        self.__ftp_session.pwd()
-        pass
+        path = self.__ftp_session.pwd()
+        print(path)
+        # if path == None:
+        #     print(self.__path)
+        #     pass
+        # else:
+        #     print(path)
+        #     pass
+        # pass
 
     def rm_file(self, file):
         try:
@@ -70,9 +79,17 @@ class FTPClient:
             self.opt_failed('delete file failed')
             pass
         pass
-    
-    def cd_dir(self,dir):
-        self.__ftp_session.cmd(dir)
+
+    def cd_dir(self, dir):
+        try:
+            self.__ftp_session.cwd(dir)
+            pass
+        except Exception as e:
+            self.opt_failed('550 no such directory')
+            pass
+        else:
+            self.__path = self.__ftp_session.pwd()
+            pass
         pass
 
     def opt_failed(self, msg=''):
@@ -81,6 +98,36 @@ class FTPClient:
 
     def __print_invalid(self):
         print("invalid argument")
+        pass
+
+    def __print_no_such_command(self, ftp_cmd):
+        print('no such command: ' + ftp_cmd)
+        pass
+
+    def __has_enough_argument(self, cmd_list):
+        if len(cmd_list) <= 1:
+            print(cmd_list + 'command requires argument')
+            return False
+            pass
+        else:
+            return True
+            pass
+        pass
+
+    # def __chdir(self, new_path=''):
+    #     if new_path == '../':
+    #         if self.__path == "/":
+    #             pass
+    #         else:
+    #             index = self.__path.rindex('/')
+    #             self.__path[:index]
+    #             pass
+    #         pass
+    #     else:
+    #         self.__path = self.__path + '/' + new_path
+    #         pass
+    #     print('pwd: ' + self.__path)
+    #     pass
 
     def print_help(self):
         print('''
@@ -100,14 +147,18 @@ cwd    = show current ftp dir path
             self.list_dir()
             pass
         elif ftp_cmd == "pwd":
-            print(self.get_cwd())
+            self.get_cwd()
             pass
         elif ftp_cmd == "cd":
-            print(self.cd_dir())
+            if self.__has_enough_argument(cmd_list):
+                self.cd_dir(cmd_list[1])
+                pass
+            else:
+                pass
             pass
         elif ftp_cmd == 'q' or ftp_cmd == 'quit':
             self.__quit = True
         else:
-            self.__print_invalid()
+            self.__print_no_such_command(ftp_cmd)
             pass
         pass
