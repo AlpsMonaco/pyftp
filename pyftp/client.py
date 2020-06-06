@@ -11,9 +11,9 @@ def start_ftp_client(ftp_tuple):
 
 
 class FTPClient:
-    __ftp_session = None
-    __quit = False
-    __path = "/"
+    _ftp_session = None
+    _quit = False
+    _path = "/"
 
     def __init__(self, host='', port=21, user='', password=''):
         ftp_client = FTP()
@@ -27,35 +27,35 @@ class FTPClient:
             ftp_exit(1, 'login failed.')
             pass
         else:
-            self.__ftp_session = ftp_client
+            self._ftp_session = ftp_client
             pass
 
     def start_interact_ftp(self):
         print('Welcome to pyftp interact terminal!')
-        while not self.__quit:
+        while not self._quit:
             try:
-                input_cmd = input(self.__path + " >")
+                input_cmd = input(self._path + " >")
                 pass
             except KeyboardInterrupt as e:
-                self.__quit = True
+                self._quit = True
                 pass
             else:
                 self.ftp_command_parser(input_cmd)
                 pass
 
     def close(self):
-        self.__ftp_session.close()
+        self._ftp_session.close()
         pass
 
     def list_dir(self):
-        self.__ftp_session.dir()
+        self._ftp_session.dir()
         pass
 
     def get_cwd(self):
-        path = self.__ftp_session.pwd()
+        path = self._ftp_session.pwd()
         print(path)
         # if path == None:
-        #     print(self.__path)
+        #     print(self._path)
         #     pass
         # else:
         #     print(path)
@@ -64,7 +64,7 @@ class FTPClient:
 
     def rm_file(self, file):
         try:
-            self.__ftp_session.delete(file)
+            self._ftp_session.delete(file)
             pass
         except Exception as identifier:
             self.opt_failed('delete file failed')
@@ -73,7 +73,7 @@ class FTPClient:
 
     def rm_dir(self, dir):
         try:
-            self.__ftp_session.rm_dir(dir)
+            self._ftp_session.rm_dir(dir)
             pass
         except Exception as identifier:
             self.opt_failed('delete file failed')
@@ -82,13 +82,13 @@ class FTPClient:
 
     def cd_dir(self, dir):
         try:
-            self.__ftp_session.cwd(dir)
+            self._ftp_session.cwd(dir)
             pass
         except Exception as e:
             self.opt_failed('550 no such directory')
             pass
         else:
-            self.__path = self.__ftp_session.pwd()
+            self._path = self._ftp_session.pwd()
             pass
         pass
 
@@ -116,17 +116,17 @@ class FTPClient:
 
     # def __chdir(self, new_path=''):
     #     if new_path == '../':
-    #         if self.__path == "/":
+    #         if self._path == "/":
     #             pass
     #         else:
-    #             index = self.__path.rindex('/')
-    #             self.__path[:index]
+    #             index = self._path.rindex('/')
+    #             self._path[:index]
     #             pass
     #         pass
     #     else:
-    #         self.__path = self.__path + '/' + new_path
+    #         self._path = self._path + '/' + new_path
     #         pass
-    #     print('pwd: ' + self.__path)
+    #     print('pwd: ' + self._path)
     #     pass
 
     def print_help(self):
@@ -157,7 +157,7 @@ cwd    = show current ftp dir path
                 pass
             pass
         elif ftp_cmd == 'q' or ftp_cmd == 'quit':
-            self.__quit = True
+            self._quit = True
         else:
             self.__print_no_such_command(ftp_cmd)
             pass
